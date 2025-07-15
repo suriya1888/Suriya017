@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Table</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>ข้อมูลจาก Firestore</h2>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>ชื่อ</th>
+        <th>อีเมล</th>
+        <th>อายุ</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <script type="module">
+    // ✅ Firebase config ของคุณ
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7qimHD3FvtUH2CfFPC87w-o_vBitHpu8",
+      authDomain: "iotchayanut.firebaseapp.com",
+      projectId: "iotchayanut",
+      storageBucket: "iotchayanut.firebasestorage.app",
+      messagingSenderId: "317013336041",
+      appId: "1:317013336041:web:b346c52e91bc3b5d4e3578",
+      measurementId: "G-TH2GR58MDP"
+    };
+
+    // ✅ เริ่มใช้งาน Firebase และ Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🔄 ดึงข้อมูลจาก collection ชื่อ "users"
+    async function fetchData() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      const tableBody = document.getElementById("table-body");
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${data.name || ''}</td>
+          <td>${data.email || ''}</td>
+          <td>${data.age || ''}</td>
+        `;
+
+        tableBody.appendChild(row);
